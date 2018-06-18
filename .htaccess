@@ -1,0 +1,185 @@
+# Enabling Directory Indexing #
+Options +Indexes
+
+# Map filename extension to content type;  #
+# Map filename extension to encoding type. #
+AddType image/svg+xml svg svgz
+AddEncoding gzip svgz
+
+# .htaccess Protection #
+<Files ~ "^.*\.([Hh][Tt][Aa])">
+    order allow,deny
+    deny from all
+</Files>
+
+# mod_autoindex                 #
+# Overrides and Configuration   #
+<IfModule mod_autoindex.c>
+    # Index Options
+    # Almost all of these are required for PoshApache to work.
+    IndexOptions IgnoreCase FancyIndexing HTMLTable SuppressHTMLPreamble FoldersFirst 
+    IndexOptions VersionSort NameWidth=* DescriptionWidth=* XHTML 
+    IndexOptions IconHeight=16 IconWidth=16 
+    
+    # Optional Index Options
+    IndexOptions IconsAreLinks
+    #IndexOptions SuppressColumnSorting
+
+    # Sort order of directory contents
+    IndexOrderDefault Ascending Name
+
+    # StyleSheet for directory index (also set within header.html)
+    IndexStyleSheet /_posh/style.css
+    # Header HTML Document
+    HeaderName /_posh/header.html
+    # Footer HTML Document
+    ReadmeName /_posh/footer.html
+
+    # List of files to ignore
+    IndexIgnoreReset ON
+    IndexIgnore .ftpquota .DS_Store .gitignore .gitattributes .htaccess
+
+    # Define File and Directory Icons
+    # Default Icon
+    DefaultIcon /_posh/icons/file-text.svg
+    # Category: Directories
+    AddIcon /_posh/icons/up-directory.svg ..
+    AddIcon /_posh/icons/github.svg .github
+    AddIcon /_posh/icons/node.svg node_modules
+    AddIcon /_posh/icons/folder.svg ^^DIRECTORY^^
+    # File Type/Extension-specific Icons [https://github.com/file-icons/source] [https://fontawesome.com]
+    # Category: Basic Types       
+    AddIcon /_posh/icons/file-code.svg .c .h .mustache .rust .source .apache .yml .jade .markdown .md rollup.config.js postcss.config.js *.postcssrc *.postcssrc.json *.postcssrc.js *.postcssrc.yml composer.json composer.lock composer.phar bower.json .mustache yarn.lock *.babelrc .editorconfig .liquid
+    AddIcon /_posh/icons/file-image.svg .png .jpg .jpeg .webp .gif .bmp .ico
+    AddIcon /_posh/icons/file-video.svg .mp4 .webm .ogv .mov .m4v .mkv
+    AddIcon /_posh/icons/file-pdf.svg .pdf .psd .ai
+    AddIcon /_posh/icons/file-text.svg .txt .srt README readme Procfile
+    AddIcon /_posh/icons/file-archive.svg .zip .z .gz .Z .tgz .tar.gz .tar .rar
+    AddIcon /_posh/icons/hdd.svg .dmg .img .iso
+    AddIcon /_posh/icons/svg.svg .svg .svgx .eps
+    # Category: General
+    AddIcon /_posh/icons/cogs.svg .htaccess .env .env-dev .env-production .env-staging
+    AddIcon /_posh/icons/wrench.svg .conf .config .cfg .ini .prefs 
+    AddIcon /_posh/icons/code.svg .plist .rust .xml .nunjucks .pug .styl vagrantfile Vagrantfile
+    # Category: Application Source/Data
+    AddIcon /_posh/icons/html.svg .html .htm
+    AddIcon /_posh/icons/css.svg .css
+    AddIcon /_posh/icons/sass.svg .sass .scss
+    AddIcon /_posh/icons/less.svg .less
+    AddIcon /_posh/icons/javascript.svg .js
+    AddIcon /_posh/icons/typescript.svg .ts
+    AddIcon /_posh/icons/coffee.svg .coffee
+    AddIcon /_posh/icons/vuejs.svg .vue
+    AddIcon /_posh/icons/npm.svg package.json package-lock.json
+    AddIcon /_posh/icons/grunt.svg gruntfile.js Gruntfile.js
+    AddIcon /_posh/icons/gulp.svg gulpfile.js Gulpfile.js
+    AddIcon /_posh/icons/eslint.svg *.eslintignore *.eslintrc.js *.eslintrc.json *.eslintrc *.eslintrc.yml
+    AddIcon /_posh/icons/json.svg .json
+    AddIcon /_posh/icons/webpack.svg webpack.config.js
+    AddIcon /_posh/icons/php.svg .php
+    AddIcon /_posh/icons/python.svg .py
+    AddIcon /_posh/icons/ruby.svg .rb
+    AddIcon /_posh/icons/java.svg .java
+    AddIcon /_posh/icons/database.svg .sql .mysql .sqlite .dsql .db
+    AddIcon /_posh/icons/git.svg *.gitignore *.gitattributes
+    AddIcon /_posh/icons/terminal.svg .sh .bash .app .exe .bin 
+    AddIcon /_posh/icons/save.svg .rom .n64 .v64 .z64 .nes .sfc .gbc .gba .gb .smc .nds .gen .sav
+
+    ### Filetype Descriptions        
+    # Category: Audio
+    AddDescription "MP3 audio" .mp3
+    AddDescription "FLAC audio" .flac
+    AddDescription "Ogg Vorbis audio" .ogg
+    AddDescription "AAC audio" .aac
+    AddDescription "Audio Interchange File Format" .aiff
+    AddDescription "WAV audio" .wav
+    AddDescription "Matroska Multimedia Container audio" .mka
+    AddDescription "MPEG-4 audio" .m4a
+    # Category: Video
+    AddDescription "MPEG-4 video" .mp4 .xvid
+    AddDescription "iTunes/MPEG-4 video" .m4v
+    AddDescription "QuickTime video" .mov
+    AddDescription "MPEG video" .mpeg .mpg
+    AddDescription "Matroska Multimedia Container video" .mkv
+    AddDescription "Matroska Stereoscopic video" .mk3d
+    AddDescription "Ogg Vorbis video" .ogv
+    AddDescription "WebM video" .webm
+    AddDescription "3GPP Multimedia file" .3gp
+    AddDescription "Adobe Flash video" .flv
+    # Category: Binary/Data & Documents/Text
+    AddDescription "Subtitle file" .sub
+    AddDescription "SubRip subtitle" .srt
+    AddDescription "HTML document" .html .shtml .htm
+    AddDescription "CSS document" .css
+    AddDescription "DocType Definition" .dtd
+    AddDescription "XML document" .xml
+    AddDescription "Win32 compressed HTML help" .chm
+    AddDescription "Portable Document Format file" .pdf
+    AddDescription "Plain-text document" .txt .nfo .faq .readme
+    AddDescription "Unix man page" .man
+    AddDescription "Email data" .eml .mbox
+    AddDescription "Microsoft Word document" .doc
+    AddDescription "PHP script" .php  .php3 .php4
+    AddDescription "PHP source" .phps
+    AddDescription "JavaScript Object Notation" .json
+    AddDescription "JavaScript file" .js
+    AddDescription "npm Package Configuration" package.json
+    AddDescription "Gulp script" gulpfile.js
+    AddDescription "Java source code"  .java
+    AddDescription "Unix shell script" .sh .shar .csh .ksh .command
+    AddDescription "Mac OS X shell script" .command
+    AddDescription "Configuration file" .conf
+    AddDescription "Mac OS X terminal" .term
+    AddDescription "Property List file" .plist
+    AddDescription "BitTorrent file" .torrent
+    AddDescription "Windows link" .lnk .url
+    AddDescription "Application save state" .sav
+    # Category: Archives & Executables
+    AddDescription "GZIP compressed TAR archive" .tgz .tar.gz
+    AddDescription "GZIP compressed archive" .Z .z .gz .zip
+    AddDescription "RAR compressed archive" .rar
+    AddDescription "RAR split archive" .r0* .r1* .r2* .r3* .r4* .r5* .r6* .r7* .r8* .r9*\
+                                        .part*.rar
+    AddDescription "TAR compressed archive" .tar
+    AddDescription "ZIP compressed archive" .zip
+    AddDescription "7zip compressed archive" .7z
+    AddDescription "Windows executable file" .exe
+    AddDescription "Mac OS X Application" .app
+    AddDescription "Common Gateway Interface file" .cgi
+    # Category: Disk Images
+    AddDescription "Mac OS X Disk Image" .dmg
+    AddDescription "Disc Image" .iso .img
+    AddDescription "Cue Sheet file" .cue
+    AddDescription "NES cartridge ROM image" .nes
+    AddDescription "SNES cartridge ROM image" .snes .smc .sfc
+    AddDescription "Nintendo 64 ROM image" .n64 .v64 .z64
+    AddDescription "Game Boy ROM image" .gb
+    AddDescription "Game Boy Color ROM image" .gbc
+    AddDescription "Game Boy Advance ROM image" .gba
+    AddDescription "Nintendo DS ROM image" .nds
+    AddDescription "Sega Genesis ROM image" .gen
+    AddDescription "ROM file" .rom
+    # Category: Graphics & Images
+    AddDescription "JPEG image" .jpg .jpeg .jpe
+    AddDescription "Graphic Interchange Format image" .gif
+    AddDescription "Portable Network Graphics image" .png
+    AddDescription "Adobe Photoshop file" .ps .psd 
+    AddDescription "Adobe Illustrator file" .ai .eps        
+    AddDescription "Scalable Vector Graphic file" .svg .svgz
+    # Category: OpenDocument Files
+    AddDescription "OpenDocument Text" .odt
+    AddDescription "OpenDocument Spreadsheet" .ods
+    AddDescription "OpenDocument Presentation" .odp
+    AddDescription "OpenDocument Graphics" .odg
+    AddDescription "OpenDocument Chart" .odc
+    AddDescription "OpenDocument Formula" .odf
+    AddDescription "OpenDocument Database" .odb
+    AddDescription "OpenDocument Image" .odi
+    AddDescription "OpenDocument Text Master" .odm
+    AddDescription "OpenDocument Text Template" .ott
+    AddDescription "OpenDocument Spreadsheet Template" .ots
+    AddDescription "OpenDocument Presentation Template" .otp
+    AddDescription "OpenDocument Graphics Template" .otg
+    # Default Description
+    AddDescription "File" *
+</IfModule>

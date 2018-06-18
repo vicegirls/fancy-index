@@ -1,0 +1,190 @@
+body {
+    margin: 0;
+    font-family: "Roboto", -apple-system, "Helvetica Neue", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: 300;
+    color: #404040;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    max-width: 80vw;
+    justify-self: center;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    background: #FFFFFF;
+    border: 0;
+    table-layout: auto;
+}
+
+    table tr th,
+    table tr td {
+        padding: 2vh 1vw;
+        font-size: 0.875rem;
+        color: #222222;
+        text-align: left;
+        line-height: 2vh;
+        vertical-align: middle;
+    }
+
+        table tr td.indexcollastmod > text {
+            vertical-align: bottom;
+        }
+
+    table thead {
+        background: #EFEFEF;
+    }
+
+        table thead tr th {
+            padding: 0.5rem 0.625rem 0.625rem;
+            font-weight: 300;
+        }
+
+    table tr.even {
+        background: #F5F5F5;
+    }
+
+a {
+    text-decoration: none;
+    color: #0099FF;
+}
+
+    a:hover {
+        color: #FF00CC;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: #00A2FF;
+    }
+
+.img-wrap {
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+}
+
+    .img-wrap img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        object-fit: contain;
+    }
+
+    .img-wrap + a {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+.hidden {
+    display: none;
+}
+
+#page-header {
+    display: block;
+    max-width: 80vw;
+    margin: 0;
+}
+
+    #page-header h1::before {
+        font-family: "Font Awesome 5 Free";
+        font-size: 2rem;
+        font-weight: 300;
+        content: "\f07c";
+        position: relative;
+    }
+
+    #page-header h1 {
+        font-weight: 200;
+        float: left;
+    }
+
+    #page-header input#search {
+        position: absolute;
+        right: 10.1vw;
+        top: 5vh;
+        display: block;
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.25;
+        color: #464a4c;
+        background-color: #FFFFFF;
+        background-image: none;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 0.25rem;
+        margin-left: 1rem;
+        -webkit-appearance: textfield;
+    }
+
+        #page-header input#search:focus {
+            border-color: #0099FF;
+            outline: 0;
+        }
+
+.indexcollastmod > span.lastmodified-stamp {
+    display: inline-block;
+    position: relative;
+    top: 1.4vh;
+    padding: 0;
+    min-height: 4vh;
+}
+
+.indexcollastmod > span.lastmodified {
+    display: block;
+    min-width: 12vw;
+    box-sizing: border-box;
+    padding: 1.1vh 2vh;
+    font-size: 2.4vh;
+    font-family: "Menlo", monospace;
+    line-height: 2vh;
+    text-anchor: middle;
+    color: #999999;
+    background-color: #F0F0F0;
+    border: 1px solid #99999930;
+    float: right;
+}
+
+    .lastmodified::before {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 300;
+        content: "\f017";
+        position: relative;
+        left: -0.4vw;
+        top: 1px;
+    }
+
+/* Hide extra columns so they don't squash file names */
+@media (max-width: 600px) {
+    .indexcollastmod, .indexcoldesc, .indexcolsize {
+        display: none;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    #page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        margin-bottom: 1em
+    }
+
+    #search {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 400px) {
+    h1 {
+        font-size: 1.375em;
+    }
+}
