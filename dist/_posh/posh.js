@@ -1,22 +1,33 @@
+const loaded = new Promise(function(resolve, reject){
+    window.addEventListener("load", resolve);
+});
+
 const fixTable = function() {
-    const table = document.querySelector('table');
+    const table = document.querySelector("table");
 
     // Remove <hr>s
-    Array.from(table.querySelectorAll('hr')).forEach(({ parentNode }) => {
+    Array.from(table.querySelectorAll("hr")).forEach(({ parentNode }) => {
         const row = parentNode.parentNode;
         row.parentNode.removeChild(row);
     });
 
     // Make a table head.
-    const thead = document.createElement('thead');
-    const firstRow = table.querySelector('tr');
+    const thead = document.createElement("thead");
+    const firstRow = table.querySelector("tr");
+
     firstRow.parentNode.removeChild(firstRow);
     thead.appendChild(firstRow);
     table.insertBefore(thead, table.firstElementChild);
 
     // Remove the first column and put the image in the next.
-    const rows = Array.from(table.querySelectorAll('tr'));
-    rows.forEach((row) => {
+    const rows = Array.from(table.querySelectorAll("tr"));
+    const tbody = document.querySelectorAll("tbody");
+    const rowo = document.querySelectorAll("tbody tr");
+    const rowParent = tbody[0].firstElementChild;
+    const rowParentEls = rowParent.children;
+    const rowParentDir = document.createElement("caption");
+
+    rows.forEach((row, i) => {
         const iconColumn = row.children[0];
         const fileColumn = row.children[1];
 
@@ -30,18 +41,31 @@ const fixTable = function() {
         }
 
         // Wrap icon in a div.img-wrap.
-        const div = document.createElement('div');
-        div.className = 'img-wrap';
-        div.appendChild(image);
+        const span = document.createElement("span");
+        span.className = "file-icon";
+        span.appendChild(image);
 
         // Insert icon before filename.
-        fileColumn.insertBefore(div, fileColumn.firstElementChild);
+        fileColumn.insertBefore(span, fileColumn.firstElementChild);
+
+        if(i == (rows.length - 1)) {
+            for(i = 0; i < rowParentEls.length; i++){
+                rowParentEls[i].className = "caption-text";
+                rowParentDir.innerHTML += `${rowParentEls[i].innerHTML}`;
+                if(i == (rowParentEls.length - 1)) {
+                    tbody[0].firstElementChild.remove();
+                    tbody[0].before(rowParentDir);
+                }
+            };
+        }
     });
 };
 
 // Underscore string's titleize.
 const titleize = function(str) {
-    return decodeURI(str).toLowerCase().replace(/(?:^|\s|-)\S/g, c => /* c.toUpperCase() */ {return c;});
+    return decodeURI(str).toLowerCase().replace(/(?:^|\s|-)\S/g, function(match, offset) { 
+       return match.toUpperCase();
+    });
 };
 
 const addTitle = function() {
@@ -56,7 +80,7 @@ const addTitle = function() {
         titleText = window.location.host;
     }
 
-    titleText = ` ${titleText}`;
+    titleText = `${titleText}`;
 
     const container = document.createElement('div');
     container.id = 'page-header';
@@ -68,9 +92,10 @@ const addTitle = function() {
     document.title = titleText;
 };
 
-const addContainer = () => {
+function addContainer() {
     const originalBodyContent = document.body.innerHTML;
     const container = "<div class=\"container\">\n" + originalBodyContent + "\n</div>";
+
     document.body.innerHTML = container;
 };
 
@@ -151,7 +176,7 @@ const makeElapsedString = (arr) => { // Argument should be an array produced by 
 
     for(i = 0; i < (arr.length - limit); i++) {
         timeSince += `${arr[i]}`;
-        if(i <= limit) { timeSince += ""; } else { timeSince += " "; }
+        if(i <= limit) { timeSince += " "; } else { timeSince += ""; }
     }
 
     return `${timeSince} ago`;
@@ -167,8 +192,8 @@ const insertElapsed = () => {
 
     if( lastModCells.length == 0 ) { return; }
 
-    for(i = 1; i < lastModCells.length; i++) {
-        if(i > 0) {
+    for(i = 0; i < lastModCells.length; i++) {
+        if(i >= 0) {
             let elapsedEl = document.createElement("span");
                 elapsedEl.className = "lastmodified";
 
@@ -197,51 +222,71 @@ const insertElapsed = () => {
 
 };
 
-const addSearch = function() {
-    const input = document.createElement('input');
-    input.type = 'search';
-    input.id = 'search';
-    input.setAttribute('placeholder', 'Search');
-    document.getElementById('page-header').appendChild(input);
+class Search {
+    constructor(init) {
+        if(init == "init") {
+            this.input = document.createElement("input");
+            this.input.type = "search";
+            this.input.id = "search";
+            this.input.setAttribute("placeholder", "Search");
+            document.getElementById("page-header").appendChild(this.input);
+            this.sortColumns = Array.from(document.querySelectorAll("thead a"));
+            this.nameColumns = Array.from(document.querySelectorAll("tbody .indexcolname"));
+            this.rows = this.nameColumns.map(({ parentNode }) => parentNode);
+            this.fileNames = this.nameColumns.map(({ textContent }) => textContent);
+            
+            this.filter("");
+        } else {
+            this.sortColumns = Array.from(document.querySelectorAll("thead a"));
+            this.nameColumns = Array.from(document.querySelectorAll("tbody .indexcolname"));
+            this.rows = this.nameColumns.map(({ parentNode }) => parentNode);
+            this.fileNames = this.nameColumns.map(({ textContent }) => textContent);
+        }
+        
+    }
 
-    const sortColumns = Array.from(document.querySelectorAll('thead a'));
-    const nameColumns = Array.from(document.querySelectorAll('tbody .indexcolname'));
-    const rows = nameColumns.map(({ parentNode }) => parentNode);
-    const fileNames = nameColumns.map(({ textContent }) => textContent);
+    filter(str) {
+        const colSort = this.sortColumns;
+        const colName = this.nameColumns;
+        const rows = this.rows;
+    
 
-    function filter(value) {
-        // Allow tabbing out of the search input and skipping the sort links
-        // when there is a search value.
-        sortColumns.forEach((link) => {
-            if (value) {
+        colSort.forEach((link) => {
+            if(str) {
                 link.tabIndex = -1;
             } else {
-                link.removeAttribute('tabIndex');
+                link.removeAttribute("tabIndex");
             }
         });
 
-        // Test the input against the file/folder name.
         let even = false;
-        fileNames.forEach((name, i) => {
-            if (!value || name.toLowerCase().includes(value.toLowerCase())) {
-                const className = even ? 'even' : '';
-                rows[i].className = className;
-                even = !even;
+
+        colName.forEach((name, i) => {
+            let rowClasses = rows[i].classList;
+            if (!str || name.innerText.toLowerCase().includes(str.toLowerCase())) {
+                rowClasses.remove("hidden");
             } else {
-                rows[i].className = 'hidden';
+                rowClasses.add("hidden");
             }
         });
     }
+    
+    static async inputMon(){
+        try {
+            const searchBar = await document.getElementById("search");
+            const search = await new Search("no");
+            await searchBar.addEventListener("input", function(event){
+                search.filter(event.target.value);
+                console.log(`Monitoring: ${searchBar}`);
+            });
+        } catch(err) {
+            console.log(`Failed to attach monitor to input.`, err);
+        }
+    }
+}
 
-    document.getElementById('search').addEventListener('input', ({ target }) => {
-        filter(target.value);
-    });
-
-    filter('');
-};
-
-window.addEventListener("load", function() {
-    fixTable(); addTitle(); addSearch();
-    insertElapsed();
-    addContainer();
+loaded.then(function(){
+   fixTable(); addTitle(); insertElapsed(); addContainer();
+   const buildSearch = new Search("init");
+   return Search.inputMon();
 });
